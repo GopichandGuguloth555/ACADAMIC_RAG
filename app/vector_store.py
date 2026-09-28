@@ -1,6 +1,8 @@
 import chromadb
 
-client = chromadb.PersistentClient(path="../data/vectorstore")
+client = chromadb.PersistentClient(
+    path="../data/vectorstore"
+)
 
 collection = client.get_or_create_collection(
     name="academic_documents"
@@ -8,13 +10,23 @@ collection = client.get_or_create_collection(
 
 
 def add_documents(chunks, embeddings):
-    ids = [f"chunk_{i}" for i in range(len(chunks))]
 
-    documents = [chunk.page_content for chunk in chunks]
+    ids = [
+        f"chunk_{chunk.metadata['chunk_id']}"
+        for chunk in chunks
+    ]
 
-    metadatas = [chunk.metadata for chunk in chunks]
+    documents = [
+        chunk.page_content
+        for chunk in chunks
+    ]
 
-    collection.add(
+    metadatas = [
+        chunk.metadata
+        for chunk in chunks
+    ]
+
+    collection.upsert(
         ids=ids,
         documents=documents,
         embeddings=embeddings,
