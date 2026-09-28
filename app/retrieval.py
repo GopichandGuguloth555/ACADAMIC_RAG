@@ -1,13 +1,19 @@
 from embeddings import create_embedding
 from vector_store import collection
 from reranker import rerank_documents
+from query_rewriter import rewrite_query
 
 
 def retrieve_documents(query: str, k: int = 5):
 
-    candidate_k = 10
+    # 1. Rewrite the user's query for better retrieval
+    search_query = rewrite_query(query)
 
-    query_embedding = create_embedding(query)
+    # 2. Create embedding from the rewritten query
+    query_embedding = create_embedding(search_query)
+
+    # 3. Retrieve more candidates
+    candidate_k = 10
 
     results = collection.query(
         query_embeddings=[query_embedding],
@@ -17,8 +23,9 @@ def retrieve_documents(query: str, k: int = 5):
     documents = results["documents"][0]
     metadatas = results["metadatas"][0]
 
+    # 4. Rerank the candidates
     ranked_documents = rerank_documents(
-        query,
+        search_query,
         documents,
         metadatas,
         top_k=k
@@ -36,5 +43,6 @@ def retrieve_documents(query: str, k: int = 5):
     return {
         "documents": final_documents,
         "metadatas": final_metadatas,
-        "scores": final_scores
+        "scores": final_scores,
+        "search_query": search_query
     }

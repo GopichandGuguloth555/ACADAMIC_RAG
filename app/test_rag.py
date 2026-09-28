@@ -6,10 +6,10 @@ query = "What is computer science?"
 result = answer_question(query)
 
 
-print("\n================ ANSWER ================\n")
+print("\nANSWER\n")
 print(result["answer"])
 
-print("\n================ SOURCES ================\n")
+print("\nSOURCES\n")
 
 for source in result["sources"]:
     print(
