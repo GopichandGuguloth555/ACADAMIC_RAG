@@ -5,18 +5,19 @@ from context_builder import build_context
 
 def answer_question(query: str, k: int = 5):
 
-    # Retrieve and rerank documents
+    # 1. Retrieve and rerank relevant documents
     results = retrieve_documents(query, k=k)
 
     documents = results["documents"]
     metadatas = results["metadatas"]
 
-    # Build optimized context
+    # 2. Build optimized context
     context = build_context(
         documents,
         metadatas
     )
 
+    # 3. Create grounded RAG prompt
     prompt = f"""
 You are an academic knowledge assistant.
 
@@ -39,8 +40,10 @@ Question:
 Answer:
 """
 
+    # 4. Generate answer using the LLM
     answer = generate_answer(prompt)
 
+    # 5. Prepare source information
     sources = []
 
     for metadata in metadatas:
@@ -50,8 +53,10 @@ Answer:
             "chunk_id": metadata.get("chunk_id")
         })
 
+    # 6. Return complete RAG result
     return {
         "answer": answer,
         "sources": sources,
-        "search_query": results.get("search_query")
+        "search_query": results.get("search_query"),
+        "context": context
     }
