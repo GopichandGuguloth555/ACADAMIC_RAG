@@ -7,8 +7,8 @@ def answer_question(query: str, k: int = 5):
     # 1. Retrieve relevant documents
     results = retrieve_documents(query, k=k)
 
-    documents = results["documents"][0]
-    metadatas = results["metadatas"][0]
+    documents = results["documents"]
+    metadatas = results["metadatas"]
 
     # 2. Build context
     context_parts = []

@@ -1,7 +1,7 @@
 from rag import answer_question
 
 
-query = "Who is the current president of India?"
+query = "What is computer science?"
 
 result = answer_question(query)
 
